@@ -10,7 +10,7 @@ FROM (
         , p.price * u.units AS price_products
     FROM Prices p
         LEFT JOIN UnitsSold u ON p.product_id = u.product_id
-    WHERE (u.purchase_date BETWEEN p.start_date AND p.end_date) OR units IS NULL 
+    WHERE (u.purchase_date BETWEEN p.start_date AND p.end_date) OR u.units IS NULL 
     ORDER BY p.product_id, p.start_date
 ) AS sub
 GROUP BY product_id
