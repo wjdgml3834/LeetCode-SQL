@@ -1,8 +1,10 @@
--- 2. COUNT(*) - COUNT(transaction_id) -> only null
+-- 3. WHERE IS NULL 
 SELECT v.customer_id
-     , COUNT(*) - COUNT(t.transaction_id) AS count_no_trans
+     , COUNT(*) AS count_no_trans
 FROM Visits v
     LEFT JOIN Transactions t ON v.visit_id = t.visit_id
+WHERE t.transaction_id IS NULL
 GROUP BY v.customer_id
-HAVING count_no_trans != 0 
+
+
 
