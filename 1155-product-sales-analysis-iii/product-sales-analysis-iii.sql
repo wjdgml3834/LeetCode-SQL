@@ -1,13 +1,15 @@
-SELECT product_id
+SELECT s.product_id
      , year AS first_year
      , quantity
      , price
-FROM (
-    SELECT product_id
-        , year
-        , quantity
-        , price
-        , DENSE_RANK () OVER (PARTITION BY product_id ORDER BY year) AS rn
-    FROM Sales
-) AS sub 
-WHERE rn = 1 
+FROM Sales s
+    INNER JOIN (
+            SELECT product_id
+            , MIN(year) AS min_year
+            FROM Sales
+            GROUP BY product_id
+    ) f 
+    ON s.product_id = f.product_id AND s.year = f.min_year
+
+
+    
