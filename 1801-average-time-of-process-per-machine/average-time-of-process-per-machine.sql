@@ -1,3 +1,4 @@
+-- 1. SUBQUERY + CASE WHEN 
 SELECT machine_id
      , ROUND(AVG(end_time - start_time),3) AS processing_time
 FROM (
