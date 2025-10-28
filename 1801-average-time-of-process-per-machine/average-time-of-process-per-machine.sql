@@ -1,15 +1,22 @@
--- 1. JOIN METHOD 
-SELECT st.machine_id
-     , ROUND(AVG(et.timestamp - st.timestamp),3) AS processing_time
-FROM (
+-- with clauses
+WITH st AS (
     SELECT *
     FROM Activity
     WHERE activity_type = 'start'
-) AS st 
-INNER JOIN (
+),
+et AS (
     SELECT *
     FROM Activity
     WHERE activity_type = 'end'
-) AS et
-ON st.machine_id = et.machine_id AND st.process_id = et.process_id
-GROUP BY st.machine_id
+),
+joined AS (
+    SELECT st.machine_id
+         , st.timestamp AS start_time
+         , et.timestamp AS end_time
+    FROM st
+        INNER JOIN et ON st.machine_id = et.machine_id AND st.process_id = et.process_id
+)
+SELECT machine_id
+     , ROUND(AVG(end_time - start_time),3) AS processing_time
+FROM joined
+GROUP BY machine_id
