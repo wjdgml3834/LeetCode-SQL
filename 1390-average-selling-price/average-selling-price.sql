@@ -1,5 +1,5 @@
 SELECT product_id
-     , CASE WHEN SUM(units) IS NOT NULL THEN ROUND(SUM(total_price) / SUM(units),2) ELSE 0 END AS average_price
+     , CASE WHEN SUM(units) != 0 THEN ROUND(SUM(total_price) / SUM(units),2) ELSE 0 END AS average_price
 FROM (
     SELECT p.product_id
         , p.price
