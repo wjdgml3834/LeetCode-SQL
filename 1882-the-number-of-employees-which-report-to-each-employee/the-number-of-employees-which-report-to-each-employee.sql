@@ -3,7 +3,7 @@
 
 SELECT m.employee_id, m.name
      , COUNT(DISTINCT e.employee_id) AS reports_count
-     , ROUND(SUM(e.age) / COUNT(*)) AS average_age
+     , ROUND(AVG(e.age)) AS average_age
 FROM Employees e
     INNER JOIN Employees m  ON e.reports_to = m.employee_id
 GROUP BY m.employee_id, m.name
