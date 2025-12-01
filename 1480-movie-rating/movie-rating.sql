@@ -1,19 +1,30 @@
--- 1. 최대한 많은 영화를 평가한 사람을 찾기 
+WITH user_rating AS (
+    SELECT mr.user_id, u.name
+         , COUNT(*) AS rating_num
+    FROM MovieRating mr
+        INNER JOIN Users u ON mr.user_id = u.user_id
+    GROUP BY mr.user_id, u.name
+),
+movie_rating AS (
+    SELECT mr.movie_id, m.title
+         , AVG(rating) AS avg_rating
+    FROM MovieRating mr
+        INNER JOIN Movies m ON mr.movie_id = m.movie_id
+    WHERE created_at BETWEEN '2020-02-01' AND '2020-02-29'
+    GROUP BY mr.movie_id, m.title
+)
 (
-SELECT u.name AS results
-FROM MovieRating mr
-    INNER JOIN Users u ON mr.user_id = u.user_id
-GROUP BY mr.user_id, u.name
-ORDER BY COUNT(*) DESC, name ASC
-LIMIT 1)
-UNION ALL
-#2. 2020년도에 가장 높은 평가를 받은 영화 찾기
+    SELECT name AS results
+    FROM user_rating
+    WHERE rating_num = (SELECT MAX(rating_num) FROM user_rating)
+    ORDER BY name ASC
+    LIMIT 1 
+)
+UNION ALL 
 (
-SELECT m.title
-FROM MovieRating mr
-    INNER JOIN Movies m ON mr.movie_id = m.movie_id
-WHERE YEAR(mr.created_at) = 2020 AND MONTH(mr.created_at) = 2
-GROUP BY m.title
-ORDER BY AVG(rating) DESC, m.title ASC
-LIMIT 1 
+    SELECT title AS results
+    FROM movie_rating
+    WHERE avg_rating = (SELECT MAX(avg_rating) FROM movie_rating)
+    ORDER BY title ASC
+    LIMIT 1 
 )
