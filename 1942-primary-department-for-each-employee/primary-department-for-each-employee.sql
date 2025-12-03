@@ -1,15 +1,15 @@
--- SECOND WAY: IN 
+-- THIRD WAY: WINDOW FUNCTION -> COUNT(*) OVER()
 SELECT employee_id
      , department_id
-FROM Employee
-WHERE primary_flag = 'Y'
-OR employee_id IN (
+FROM 
+(
     SELECT employee_id
+        , department_id
+        , primary_flag
+        , COUNT(*) OVER (PARTITION BY employee_id) AS dept_cnt
     FROM Employee
-    GROUP BY employee_id
-    HAVING COUNT(employee_id) = 1
-)
-
+) AS sub
+WHERE dept_cnt = 1 OR (dept_cnt >=2 AND primary_flag='Y')
 
 
 
